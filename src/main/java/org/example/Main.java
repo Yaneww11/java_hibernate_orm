@@ -83,9 +83,11 @@ public class Main {
 //        System.out.println(managedBuildings);
 //          companyDao.assignEmployeeToCompany(1, 21);
 //          companyDao.removeBuildingFromCompany(12);
-        System.out.println(residentDao.getResidentsSortedByAge(false));
+//        System.out.println(residentDao.getResidentsSortedByAge(false));
 
-
+//        System.out.println(employeeDao.getBuildingsCountByEmployeeInCompany(2));
+//        System.out.println(buildingDao.getResidentCountInBuilding(1));
+        System.out.println(feeDao.getAmountsToBePaidByBuilding());
 // TODO: fix delete
 //        employeeDao.deleteById(8);
     }

@@ -147,4 +147,66 @@ public class FeeDao {
             transaction.commit();
         }
     }
+
+    public Map<Company, BigDecimal> getAmountsToBePaidByCompany() {
+        Map<Company, BigDecimal> result = new HashMap<>();
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            String hql = "SELECT c, SUM(f.amount) AS totalAmount " +
+                    "FROM Company c " +
+                    "JOIN c.buildings b " +
+                    "JOIN b.apartments a " +
+                    "JOIN a.residents r " +
+                    "JOIN Fee f ON f.resident.id = r.id " +
+                    "WHERE f.isPaid = false " +
+                    "GROUP BY c";
+
+            List<Object[]> queryResult = session.createQuery(hql, Object[].class).getResultList();
+            for (Object[] row : queryResult) {
+                Company company = (Company) row[0];
+                BigDecimal amount = (BigDecimal) row[1];
+                result.put(company, amount);
+            }
+        }
+        return result;
+    }
+
+    public Map<Building, BigDecimal> getAmountsToBePaidByBuilding() {
+        Map<Building, BigDecimal> result = new HashMap<>();
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            String hql = "SELECT b, SUM(f.amount) AS totalAmount " +
+                    "FROM Building b " +
+                    "JOIN b.apartments a " +
+                    "JOIN a.residents r " +
+                    "JOIN Fee f ON f.resident.id = r.id " +
+                    "WHERE f.isPaid = false " +
+                    "GROUP BY b";
+
+            List<Object[]> queryResult = session.createQuery(hql, Object[].class).getResultList();
+            for (Object[] row : queryResult) {
+                Building building = (Building) row[0];
+                BigDecimal amount = (BigDecimal) row[1];
+                result.put(building, amount);
+            }
+        }
+        return result;
+    }
+
+    public Map<Resident, BigDecimal> getAmountsToBePaidByResident() {
+        Map<Resident, BigDecimal> result = new HashMap<>();
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            String hql = "SELECT r, SUM(f.amount) AS totalAmount " +
+                    "FROM Resident r " +
+                    "JOIN Fee f ON f.resident.id = r.id " +
+                    "WHERE f.isPaid = false " +
+                    "GROUP BY r";
+
+            List<Object[]> queryResult = session.createQuery(hql, Object[].class).getResultList();
+            for (Object[] row : queryResult) {
+                Resident resident = (Resident) row[0];
+                BigDecimal amount = (BigDecimal) row[1];
+                result.put(resident, amount);
+            }
+        }
+        return result;
+    }
 }

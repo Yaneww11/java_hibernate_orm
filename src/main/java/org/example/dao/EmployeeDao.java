@@ -58,7 +58,7 @@ public class EmployeeDao {
         }
     }
 
-    public static Set<Building> getEmployeeManagedBuildings(long id) {
+    public static Set<Building> getEmployeeManagedBuildings(long employee_id) {
         Employee employee;
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()){
             Transaction transaction = session.beginTransaction();
@@ -67,7 +67,7 @@ public class EmployeeDao {
                                     "join fetch e.managedBuildings " +
                                     "where e.id = :id",
                             Employee.class)
-                    .setParameter("id", id)
+                    .setParameter("id", employee_id)
                     .getSingleResult();
             transaction.commit();
         }
@@ -95,11 +95,6 @@ public class EmployeeDao {
         }
     }
 
-    /**
-     * Gets a count of buildings managed by each employee in a company
-     * @param companyId the ID of the company
-     * @return Map with Employee objects as keys and Integer counts as values
-     */
     public Map<Employee, Integer> getBuildingsCountByEmployeeInCompany(long companyId) {
         Map<Employee, Integer> result = new HashMap<>();
         
@@ -114,12 +109,7 @@ public class EmployeeDao {
         
         return result;
     }
-    
-    /**
-     * Gets detailed information about buildings managed by each employee in a company
-     * @param companyId the ID of the company
-     * @return Map with Employee objects as keys and Sets of Building objects as values
-     */
+
     public Map<Employee, Set<Building>> getDetailedBuildingsByEmployeeInCompany(long companyId) {
         Map<Employee, Set<Building>> result = new HashMap<>();
         

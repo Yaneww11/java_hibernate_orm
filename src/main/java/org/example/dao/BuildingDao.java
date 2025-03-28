@@ -75,21 +75,11 @@ public class BuildingDao {
         return building.getApartments();
     }
 
-    /**
-     * Get the count of apartments in a building
-     * @param buildingId the ID of the building
-     * @return the number of apartments
-     */
     public int getApartmentCountInBuilding(long buildingId) {
         Set<Apartment> apartments = getBuildingApartments(buildingId);
         return apartments.size();
     }
-    
-    /**
-     * Get all residents living in a building
-     * @param buildingId the ID of the building
-     * @return List of Resident objects
-     */
+
     public List<Resident> getResidentsInBuilding(long buildingId) {
         List<Resident> allResidents = new ArrayList<>();
         
@@ -105,12 +95,7 @@ public class BuildingDao {
         
         return allResidents;
     }
-    
-    /**
-     * Get the count of residents in a building
-     * @param buildingId the ID of the building
-     * @return the number of residents
-     */
+
     public int getResidentCountInBuilding(long buildingId) {
         return getResidentsInBuilding(buildingId).size();
     }
