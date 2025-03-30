@@ -52,6 +52,19 @@ public class EmployeeDao {
             Transaction transaction = session.beginTransaction();
             Employee employee = session.get(Employee.class, id);
             if (employee != null) {
+                // Remove the employee from all managed buildings before deleting
+                if (employee.getManagedBuildings() != null && !employee.getManagedBuildings().isEmpty()) {
+                    // Get all buildings managed by this employee
+                    Set<Building> managedBuildings = employee.getManagedBuildings();
+                    // Remove the employee association from each building
+                    for (Building building : managedBuildings) {
+                        building.setAssignedEmployee(null);
+                        session.merge(building);
+                    }
+                    // Clear the employee's managed buildings set
+                    employee.getManagedBuildings().clear();
+                }
+                // Now we can safely delete the employee
                 session.remove(employee);
             }
             transaction.commit();

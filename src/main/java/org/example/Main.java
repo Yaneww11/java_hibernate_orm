@@ -87,8 +87,10 @@ public class Main {
 
 //        System.out.println(employeeDao.getBuildingsCountByEmployeeInCompany(2));
 //        System.out.println(buildingDao.getResidentCountInBuilding(1));
-        System.out.println(feeDao.getAmountsToBePaidByBuilding());
+//        System.out.println(feeDao.getAmountsToBePaidByBuilding());
+//        System.out.println(feeDao.getPaidAmountsByResident());
+//          System.out.println(feeDao.markFeeAsPaid(3));
 // TODO: fix delete
-//        employeeDao.deleteById(8);
+        employeeDao.deleteById(8);
     }
 }

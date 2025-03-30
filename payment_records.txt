@@ -1,0 +1,9 @@
+Payment Date: 2025-03-30
+Company: Yaneww company
+Employee: Ivan
+Building: 123 Main St
+Apartment: 101
+Resident: Ivab
+Amount: 118.00
+Description: Monthly maintenance fee for APRIL 2025
+----------------------------------------

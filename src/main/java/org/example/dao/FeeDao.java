@@ -5,6 +5,9 @@ import org.example.entity.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
@@ -80,11 +83,49 @@ public class FeeDao {
     public boolean markFeeAsPaid(long feeId) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            Fee fee = session.get(Fee.class, feeId);
 
-            if (fee != null) {
+            Fee fee = session.createQuery(
+                    "SELECT f FROM Fee f " +
+                    "JOIN FETCH f.resident r " +
+                    "JOIN FETCH r.apartment a " +
+                    "JOIN FETCH a.building b " +
+                    "JOIN FETCH b.company c " +
+                    "LEFT JOIN FETCH b.assignedEmployee e " +
+                    "WHERE f.id = :feeId", Fee.class)
+                    .setParameter("feeId", feeId)
+                    .uniqueResult();
+
+            if (fee != null && !fee.isPaid()) {
                 fee.setPaid(true);
                 fee.setPaidDate(LocalDate.now());
+
+                // Create payment record
+                Resident resident = fee.getResident();
+                Apartment apartment = resident.getApartment();
+                Building building = apartment.getBuilding();
+                Company company = building.getCompany();
+                Employee employee = building.getAssignedEmployee();
+
+                // Write payment details to file
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter("payment_records.txt", true))) {
+                    StringBuilder record = new StringBuilder();
+                    record.append("Payment Date: ").append(fee.getPaidDate()).append("\n");
+                    record.append("Company: ").append(company.getName()).append("\n");
+                    record.append("Employee: ").append(employee != null ? employee.getName() : "Not assigned").append("\n");
+                    record.append("Building: ").append(building.getAddress()).append("\n");
+                    record.append("Apartment: ").append(apartment.getApartmentNumber()).append("\n");
+                    record.append("Resident: ").append(resident.getName()).append("\n");
+                    record.append("Amount: ").append(fee.getAmount()).append("\n");
+                    record.append("Description: ").append(fee.getDescription()).append("\n");
+                    record.append("----------------------------------------\n");
+
+                    writer.write(record.toString());
+                    writer.flush();
+                } catch (IOException e) {
+                    System.err.println("Error writing payment record to file: " + e.getMessage());
+                    transaction.rollback();
+                    return false;
+                }
                 transaction.commit();
                 return true;
             }
@@ -198,6 +239,25 @@ public class FeeDao {
                     "FROM Resident r " +
                     "JOIN Fee f ON f.resident.id = r.id " +
                     "WHERE f.isPaid = false " +
+                    "GROUP BY r";
+
+            List<Object[]> queryResult = session.createQuery(hql, Object[].class).getResultList();
+            for (Object[] row : queryResult) {
+                Resident resident = (Resident) row[0];
+                BigDecimal amount = (BigDecimal) row[1];
+                result.put(resident, amount);
+            }
+        }
+        return result;
+    }
+
+    public Map<Resident, BigDecimal> getPaidAmountsByResident() {
+        Map<Resident, BigDecimal> result = new HashMap<>();
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
+            String hql = "SELECT r, SUM(f.amount) AS totalAmount " +
+                    "FROM Resident r " +
+                    "JOIN Fee f ON f.resident.id = r.id " +
+                    "WHERE f.isPaid = true " +
                     "GROUP BY r";
 
             List<Object[]> queryResult = session.createQuery(hql, Object[].class).getResultList();
