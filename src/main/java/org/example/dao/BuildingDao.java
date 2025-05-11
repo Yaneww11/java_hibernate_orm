@@ -34,7 +34,7 @@ public class BuildingDao {
 
     public List<Building> getByCompanyId(long companyId) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
-            return session.createQuery("FROM Building b JOIN FETCH b.company WHERE b.id = :companyId", Building.class)
+            return session.createQuery("FROM Building b JOIN FETCH b.company WHERE b.company.id = :companyId", Building.class)
                     .setParameter("companyId", companyId)
                     .list();
         }

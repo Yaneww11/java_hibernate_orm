@@ -72,19 +72,23 @@ public class EmployeeDao {
     }
 
     public static Set<Building> getEmployeeManagedBuildings(long employee_id) {
-        Employee employee;
-        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()){
+        Employee employee = null;
+        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            employee = session.createQuery(
+            List<Employee> result = session.createQuery(
                             "select e from Employee e " +
                                     "join fetch e.managedBuildings " +
                                     "where e.id = :id",
                             Employee.class)
                     .setParameter("id", employee_id)
-                    .getSingleResult();
+                    .getResultList();
             transaction.commit();
+
+            if (!result.isEmpty()) {
+                employee = result.get(0);
+            }
         }
-        return employee.getManagedBuildings();
+        return employee != null ? employee.getManagedBuildings() : Set.of();
     }
 
     public List<Employee> getEmployeesSortedByName() {
