@@ -7,3 +7,48 @@ Resident: Ivab
 Amount: 118.00
 Description: Monthly maintenance fee for APRIL 2025
 ----------------------------------------
+Payment Date: 2025-05-11
+Company: Yaneww company
+Employee: Ivan
+Building: 123 Main St
+Apartment: 101
+Resident: Ivab
+Amount: 118.00
+Description: Monthly maintenance fee for JUNE 2025
+----------------------------------------
+Payment Date: 2025-05-11
+Company: Yaneww company
+Employee: Ivan
+Building: 123 Main St
+Apartment: 101
+Resident: Ivana
+Amount: 113.00
+Description: Monthly maintenance fee for JUNE 2025
+----------------------------------------
+Payment Date: 2025-05-11
+Company: Updated Property Management
+Employee: Yane Yanev
+Building: 123 Main St
+Apartment: 104
+Resident: Pesho
+Amount: 98.00
+Description: Monthly maintenance fee for JUNE 2025
+----------------------------------------
+Payment Date: 2025-05-11
+Company: Updated Property Management
+Employee: Petyr Borisov
+Building: 123 Main St
+Apartment: 101
+Resident: Radina
+Amount: 98.00
+Description: Monthly maintenance fee for JUNE 2025
+----------------------------------------
+Payment Date: 2025-05-11
+Company: Yaneww company
+Employee: Leonardo
+Building: 123 Main St
+Apartment: 101
+Resident: Ivan
+Amount: 118.00
+Description: Monthly maintenance fee for JUNE 2025
+----------------------------------------
